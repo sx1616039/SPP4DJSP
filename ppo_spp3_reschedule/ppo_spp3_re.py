@@ -229,8 +229,8 @@ class PPO:
 
 if __name__ == '__main__':
     # training policy
-    parameters = "reno_data_set_res"
-    path = "../data_set_rescheduling/"
+    parameters = "data_set_rescheduling_new_middle"
+    path = "../data_set_rescheduling_new_middle/"
     print(parameters)
     param = [parameters, "converge_cnt", "total_time", "no_op"]
     simple_results = pd.DataFrame(columns=param, dtype=int)
@@ -238,10 +238,10 @@ if __name__ == '__main__':
         print(file_name + "========================")
         title = file_name.split('.')[0]
         name = file_name.split('_')[0]
-        env = JobEnv(title, path, no_op=True, gen_data=False)
+        env = JobEnv(title, path)
         scale = env.job_num * env.machine_num
         model = PPO(env, memory_size=5, batch_size=2*scale, clip_ep=0.25)
-        simple_results.loc[title] = model.train(name, save_params=True)
+        simple_results.loc[title] = model.train(title, save_params=True)
     simple_results.to_csv(parameters + "_result.csv")
 
     # path = "../all_data_set/"
