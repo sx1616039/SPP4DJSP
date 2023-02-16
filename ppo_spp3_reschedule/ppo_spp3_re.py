@@ -226,15 +226,15 @@ class PPO:
                 state = next_state
                 if done:
                     break
-            print(self.env.current_time)
+            # print(self.env.current_time)
             converged_value.append(env.current_time)
         return min(converged_value), 0, 0, 0
 
 
 if __name__ == '__main__':
     # training policy
-    parameters = "data_set_rescheduling_new_small"
-    path = "../data_set_rescheduling_new_small/"
+    parameters = "data_set_rescheduling_new_large"
+    path = "../data_set_rescheduling_new_large/"
     print(parameters)
     param = [parameters, "converge_cnt", "total_time", "no_op"]
     simple_results = pd.DataFrame(columns=param, dtype=int)
