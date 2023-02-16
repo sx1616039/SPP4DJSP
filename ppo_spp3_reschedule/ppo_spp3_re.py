@@ -217,32 +217,39 @@ class PPO:
 
     def test(self, data_set):
         self.load_params(data_set)
-        state = self.env.reset()
-        while True:
-            action, _ = self.select_action(state)
-            next_state, reward, done = self.env.step(action)
-            state = next_state
-            if done:
-                break
-        print(self.env.current_time)
+        converged_value = []
+        for ci in range(30):
+            state = self.env.reset()
+            while True:
+                action, _ = self.select_action(state)
+                next_state, reward, done = self.env.step(action)
+                state = next_state
+                if done:
+                    break
+            print(self.env.current_time)
+            converged_value.append(env.current_time)
+        return min(converged_value), 0, 0, 0
 
 
 if __name__ == '__main__':
     # training policy
-    parameters = "data_set_rescheduling_new_middle"
-    path = "../data_set_rescheduling_new_middle/"
+    parameters = "data_set_rescheduling_new_small"
+    path = "../data_set_rescheduling_new_small/"
     print(parameters)
     param = [parameters, "converge_cnt", "total_time", "no_op"]
     simple_results = pd.DataFrame(columns=param, dtype=int)
-    for file_name in os.listdir(path):
-        print(file_name + "========================")
-        title = file_name.split('.')[0]
-        name = file_name.split('_')[0]
-        env = JobEnv(title, path)
-        scale = env.job_num * env.machine_num
-        model = PPO(env, memory_size=5, batch_size=2*scale, clip_ep=0.25)
-        simple_results.loc[title] = model.train(title, save_params=True)
-    simple_results.to_csv(parameters + "_result.csv")
+    for cnt in range(2):
+        parameters += str(cnt)
+        for file_name in os.listdir(path):
+            print(file_name + "========================")
+            title = file_name.split('.')[0]
+            name = file_name.split('_')[0]
+            env = JobEnv(title, path)
+            scale = env.job_num * env.machine_num
+            model = PPO(env, memory_size=5, batch_size=2 * scale, clip_ep=0.25)
+            # simple_results.loc[title] = model.train(title, save_params=True)
+            simple_results.loc[title] = model.test(name)
+        simple_results.to_csv(parameters + "_result.csv")
 
     # path = "../all_data_set/"
     # env = JobEnv("la21", path)
