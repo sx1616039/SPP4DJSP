@@ -233,12 +233,12 @@ class PPO:
 
 if __name__ == '__main__':
     # training policy
-    parameters = "data_set_rescheduling_new_large-trained2"
+    parameters = "using_dmu16_test_large_dataset"
     path = "../data_set_rescheduling_new_large/"
     print(parameters)
     param = [parameters, "converge_cnt", "total_time", "no_op"]
     simple_results = pd.DataFrame(columns=param, dtype=int)
-    for cnt in range(2):
+    for cnt in range(5):
         parameters += str(cnt)
         for file_name in os.listdir(path):
             print(file_name + "========================")
@@ -249,7 +249,8 @@ if __name__ == '__main__':
             model = PPO(env, memory_size=5, batch_size=2 * scale, clip_ep=0.25)
             # simple_results.loc[title] = model.train(title, save_params=True)
             # simple_results.loc[title] = model.train(name, save_params=False)
-            simple_results.loc[title] = model.test(name)
+            # simple_results.loc[title] = model.test(name)
+            simple_results.loc[title] = model.test("dmu16")
         simple_results.to_csv(parameters + "_result.csv")
 
     # path = "../all_data_set/"
